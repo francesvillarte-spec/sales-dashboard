@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Phone Sales Dashboard</title>
+    <style>
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-green-500: rgba(46, 178, 115, 1);
+            --color-red-500: rgba(231, 76, 60, 1);
+            --color-orange-500: rgba(230, 126, 34, 1);
+            
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-white);
+            --color-text: var(--color-charcoal-700);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-border: rgba(94, 82, 64, 0.15);
+            
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+            
+            --radius-base: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.5;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--color-teal-500) 0%, var(--color-teal-600) 100%);
+            color: white;
+            padding: var(--space-24);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        header p {
+            margin: var(--space-8) 0 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header-left {
+            flex: 1;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .sync-button-header {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sync-button-header:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-24);
+        }
+
+        .tabs {
+            display: flex;
+            gap: var(--space-8);
+            margin-bottom: var(--space-24);
+            border-bottom: 2px solid var(--color-border);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: var(--space-12) var(--space-16);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--color-text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-btn:hover {
+            color: var(--color-text);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-section {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-24);
+            margin-bottom: var(--space-24);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-16);
+            margin-bottom: var(--space-16);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: var(--space-8);
+            font-size: 13px;
+            color: var(--color-text);
+        }
+
+        input, select, textarea {
+            padding: var(--space-12);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--color-white);
+            color: var(--color-text);
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(33, 128, 141, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: var(--space-12);
+            margin-top: var(--space-16);
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: var(--space-12) var(--space-24);
+            border: none;
+            border-radius: var(--radius-base);
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: var(--color-gray-200);
+            color: var(--color-text);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-gray-300);
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0232b;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-16);
+            margin-bottom: var(--space-24);
+        }
+
+        .stat-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-20);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin: var(--space-8) 0;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .target-card {
+            background: var(--color-surface);
+            border: 2px solid var(--color-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-24);
+            margin-bottom: var(--space-24);
+        }
+
+        .target-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-16);
+            flex-wrap: wrap;
+            gap: var(--space-12);
+        }
+
+        .target-header h3 {
+            margin: 0;
+            color: var(--color-primary);
+            font-size: 18px;
+        }
+
+        .target-status {
+            display: inline-block;
+            padding: var(--space-8) var(--space-16);
+            border-radius: var(--radius-base);
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .target-status.on-track {
+            background-color: rgba(46, 178, 115, 0.15);
+            color: var(--color-green-500);
+        }
+
+        .target-status.at-risk {
+            background-color: rgba(230, 126, 34, 0.15);
+            color: var(--color-orange-500);
+        }
+
+        .target-status.below-target {
+            background-color: rgba(231, 76, 60, 0.15);
+            color: var(--color-red-500);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 24px;
+            background-color: var(--color-gray-200);
+            border-radius: var(--radius-base);
+            overflow: hidden;
+            margin: var(--space-16) 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-green-500), var(--color-teal-500));
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .progress-fill.warning {
+            background: linear-gradient(90deg, var(--color-orange-500), var(--color-teal-500));
+        }
+
+        .progress-fill.danger {
+            background: linear-gradient(90deg, var(--color-red-500), var(--color-orange-500));
+        }
+
+        .target-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--space-16);
+            margin-top: var(--space-16);
+        }
+
+        .metric {
+            background-color: var(--color-gray-200);
+            padding: var(--space-16);
+            border-radius: var(--radius-base);
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin: var(--space-8) 0;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .metric.highlight {
+            background-color: rgba(33, 128, 141, 0.15);
+            border: 2px solid var(--color-primary);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: var(--color-gray-200);
+            padding: var(--space-12);
+            text-align: left;
+            font-weight: 600;
+            color: var(--color-text);
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        td {
+            padding: var(--space-12);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        tr:hover {
+            background-color: var(--color-gray-200);
+        }
+
+        .success-message {
+            background-color: rgba(33, 128, 141, 0.1);
+            border: 1px solid var(--color-primary);
+            color: var(--color-primary);
+            padding: var(--space-12) var(--space-16);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-16);
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .sync-notice {
+            background-color: rgba(230, 126, 34, 0.1);
+            border: 1px solid var(--color-orange-500);
+            color: var(--color-orange-500);
+            padding: var(--space-12) var(--space-16);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-16);
+            font-size: 13px;
+            display: none;
+        }
+
+        .sync-notice.show {
+            display: block;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--color-teal-500) 0%, var(--color-teal-600) 100%);
+            padding: var(--space-16);
+        }
+
+        .login-box {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-32);
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .login-box h1 {
+            text-align: center;
+            font-size: 28px;
+            margin: 0 0 var(--space-8) 0;
+            color: var(--color-primary);
+        }
+
+        .login-box p {
+            text-align: center;
+            color: var(--color-text-secondary);
+            margin: 0 0 var(--space-24) 0;
+            font-size: 14px;
+        }
+
+        .error-message {
+            background-color: rgba(255, 84, 89, 0.1);
+            border: 1px solid #ff5459;
+            color: #ff5459;
+            padding: var(--space-12) var(--space-16);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-16);
+            display: none;
+            font-size: 13px;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .credentials-list {
+            margin-top: var(--space-20);
+            padding-top: var(--space-20);
+            border-top: 1px solid var(--color-border);
+            font-size: 11px;
+        }
+
+        .credentials-list p {
+            text-align: center;
+            color: var(--color-text-secondary);
+            margin: var(--space-8) 0;
+        }
+
+        .credentials-list strong {
+            color: var(--color-text);
+        }
+
+        .settings-section {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-24);
+            margin-bottom: var(--space-24);
+        }
+
+        .settings-section h3 {
+            margin-top: 0;
+            color: var(--color-primary);
+        }
+
+        .info-banner {
+            background-color: rgba(33, 128, 141, 0.1);
+            border: 1px solid var(--color-primary);
+            color: var(--color-primary);
+            padding: var(--space-12) var(--space-16);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-16);
+            font-size: 13px;
+        }
+
+        .conditional-group {
+            display: none;
+        }
+
+        .conditional-group.show {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sync-status {
+            font-size: 12px;
+            margin-top: var(--space-8);
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--space-16);
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .target-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            header h1 {
+                font-size: 22px;
+            }
+
+            .login-box {
+                padding: var(--space-16);
+            }
+
+            .target-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-top {
+                flex-direction: column;
+            }
+
+            .header-left {
+                flex: unset;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <h1>📱 Sales Dashboard</h1>
+            <p>Staff Login</p>
+            
+            <div class="form-group">
+                <label for="loginUsername">Username</label>
+                <input type="text" id="loginUsername" placeholder="Enter username" autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter password">
+            </div>
+            
+            <div class="error-message" id="loginError"></div>
+            
+            <button class="btn-primary" onclick="handleLogin()" style="width: 100%; margin-top: 20px;">Login</button>
+            
+            <div class="credentials-list">
+                <p><strong>Admin:</strong> frances.villarte / uSqcIlB0</p>
+                <p><strong>Sales Staff:</strong></p>
+                <p>francis.zulueta / q5cePpMW<br>dexter.bandico / GY5NR6au<br>noraima.pabro / jZR4sCnV<br>joyce.pama / IwWyq1hd</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboardScreen" style="display: none;">
+        <header>
+            <div class="header-top">
+                <div class="header-left">
+                    <h1>📱 Mobile Phone Sales Dashboard</h1>
+                    <p>Daily Sales Tracking for Your Retail Team</p>
+                </div>
+                <div class="header-right">
+                    <button class="sync-button-header admin-only" id="headerSyncBtn" onclick="quickSyncFromSheets()" style="display: none;" title="Refresh data from Google Sheets">🔄 Sync</button>
+                    <span id="currentUser" style="color: white; font-weight: 500;"></span>
+                    <button class="btn-secondary" onclick="handleLogout()" style="padding: 8px 16px; font-size: 13px;">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Tabs Navigation -->
+            <div class="tabs" id="tabsNav">
+                <button class="tab-btn active" onclick="switchTab(event, 'record')">Record Sale</button>
+                <button class="tab-btn" onclick="switchTab(event, 'performance')">Performance</button>
+                <button class="tab-btn admin-only" onclick="switchTab(event, 'settings')" style="display: none;">Settings</button>
+            </div>
+
+            <!-- Tab 1: Record Sale -->
+            <div id="record" class="tab-content active">
+                <div class="form-section">
+                    <h2>Add New Sale</h2>
+                    <div class="success-message" id="successMsg">✓ Sale recorded successfully!</div>
+                    <div class="sync-notice" id="syncNotice">🔄 Syncing with Google Sheets...</div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" required>
+                        </div>
+                        <div class="form-group" id="staffNameGroup" style="display: none;">
+                            <label for="staffName">Staff Name (Admin Only)</label>
+                            <select id="staffName" required>
+                                <option value="">Select Staff</option>
+                                <option value="Francis Marie Zulueta">Francis Marie Zulueta</option>
+                                <option value="Dexter John Bandico">Dexter John Bandico</option>
+                                <option value="Noraima Pabro">Noraima Pabro</option>
+                                <option value="Joyce Pama">Joyce Pama</option>
+                                <option value="Frances Villarte">Frances Villarte</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="brand">Brand</label>
+                            <select id="brand" required>
+                                <option value="">Select Brand</option>
+                                <option value="iPhone">iPhone</option>
+                                <option value="Samsung">Samsung</option>
+                                <option value="Xiaomi">Xiaomi</option>
+                                <option value="OPPO">OPPO</option>
+                                <option value="Vivo">Vivo</option>
+                                <option value="Realme">Realme</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="model">Model</label>
+                            <input type="text" id="model" placeholder="e.g., iPhone 13" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="variant">Variant/Storage</label>
+                            <input type="text" id="variant" placeholder="e.g., 128GB" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity">Quantity</label>
+                            <input type="number" id="quantity" min="1" value="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="unitPrice">Unit Price (₱)</label>
+                            <input type="number" id="unitPrice" min="0" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="source">Source</label>
+                            <select id="source" required>
+                                <option value="">Select Source</option>
+                                <option value="Walk-in">Walk-in</option>
+                                <option value="Online">Online</option>
+                                <option value="Referral">Referral</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentMode">Payment Mode</label>
+                            <select id="paymentMode" required onchange="handlePaymentModeChange()">
+                                <option value="">Select Mode</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Debit Card">Debit Card</option>
+                                <option value="GCash">GCash</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Financing">Financing</option>
+                            </select>
+                        </div>
+
+                        <!-- Conditional: Credit Card Payment Type -->
+                        <div class="form-group conditional-group" id="creditCardTypeGroup">
+                            <label for="creditCardType">Credit Card Payment</label>
+                            <select id="creditCardType" required>
+                                <option value="">Select Payment Type</option>
+                                <option value="Straight Payment">Straight Payment</option>
+                                <option value="Installment">Installment</option>
+                            </select>
+                        </div>
+
+                        <!-- Conditional: Financing Provider -->
+                        <div class="form-group conditional-group" id="financingProviderGroup">
+                            <label for="financingProvider">Financing Provider</label>
+                            <select id="financingProvider" required>
+                                <option value="">Select Provider</option>
+                                <option value="Home Credit">Home Credit</option>
+                                <option value="Skyro">Skyro</option>
+                                <option value="Billease">Billease</option>
+                                <option value="Payjoy">Payjoy</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="btn-primary" onclick="recordSale()">Record Sale</button>
+                        <button class="btn-secondary" onclick="clearForm()">Clear</button>
+                    </div>
+                </div>
+
+                <!-- Recent Sales -->
+                <div class="form-section">
+                    <h2>Recent Sales</h2>
+                    <div id="staffSalesInfo" class="info-banner" style="display: none;"></div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Staff</th>
+                                    <th>Brand</th>
+                                    <th>Model</th>
+                                    <th>Qty</th>
+                                    <th>Total (₱)</th>
+                                    <th>Source</th>
+                                    <th>Payment</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Performance -->
+            <div id="performance" class="tab-content">
+                <!-- Monthly Target Section -->
+                <div id="targetSectionContainer"></div>
+
+                <!-- Sales Performance Stats -->
+                <div class="stats-grid" id="performanceStats"></div>
+
+                <!-- Performance Table -->
+                <div class="form-section">
+                    <h2>Sales Performance Summary</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Staff Name</th>
+                                    <th>Total Sales (₱)</th>
+                                    <th>Units Sold</th>
+                                    <th>Transactions</th>
+                                    <th>Avg Per Sale (₱)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="performanceBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Settings (Admin Only) -->
+            <div id="settings" class="tab-content">
+                <div class="settings-section">
+                    <h3>Google Sheets Sync (Two-Way)</h3>
+                    <p>Sync data bidirectionally with Google Sheets. Changes in Excel will be reflected in the app.</p>
+                    <div class="form-group">
+                        <label for="scriptUrl">Google Apps Script URL</label>
+                        <input type="text" id="scriptUrl" readonly style="background-color: var(--color-gray-200);">
+                    </div>
+                    <div class="button-group">
+                        <button class="btn-secondary" onclick="testConnection()">Test Connection</button>
+                        <button class="btn-primary" onclick="pullDataFromSheets()">🔄 Pull Latest from Google Sheets</button>
+                        <button class="btn-secondary" onclick="syncToGoogleSheets()">📤 Push to Google Sheets</button>
+                    </div>
+                    <div id="settingsMessage" class="success-message" style="margin-top: 20px;"></div>
+                    <div class="sync-status" id="syncStatus"></div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Data Management</h3>
+                    <p>Download or clear your sales data.</p>
+                    <div class="button-group">
+                        <button class="btn-secondary" onclick="downloadAsCSV()">Download as CSV</button>
+                        <button class="btn-danger" onclick="clearAllData()">Clear All Data</button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Auto-Sync Settings</h3>
+                    <p>Enable auto-sync to automatically pull data from Google Sheets every 5 minutes.</p>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="autoSyncCheckbox" onchange="toggleAutoSync()"> Enable Auto-Sync
+                        </label>
+                    </div>
+                    <div class="sync-status" id="autoSyncStatus"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize date to today
+        document.getElementById('date').valueAsDate = new Date();
+
+        // Data storage
+        let salesData = [];
+        let scriptUrl = 'https://script.google.com/macros/s/AKfycbwNILbqN5rfGBz2kQg4sdTIbf_S-wv8R-pwvT1fU51dabRQNZPyJHVjnJKifg97r_ozhQ/exec';
+        let currentUser = null;
+        const MONTHLY_TARGET = 1350000;
+        let autoSyncInterval = null;
+
+        // User credentials
+        const users = {
+            'francis.zulueta': { password: 'q5cePpMW', role: 'staff', name: 'Francis Marie Zulueta' },
+            'dexter.bandico': { password: 'GY5NR6au', role: 'staff', name: 'Dexter John Bandico' },
+            'noraima.pabro': { password: 'jZR4sCnV', role: 'staff', name: 'Noraima Pabro' },
+            'joyce.pama': { password: 'IwWyq1hd', role: 'staff', name: 'Joyce Pama' },
+            'frances.villarte': { password: 'uSqcIlB0', role: 'admin', name: 'Frances Villarte' }
+        };
+
+        function getDaysUntilMonthEnd() {
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+            const daysRemaining = lastDayOfMonth.getDate() - today.getDate();
+            return daysRemaining;
+        }
+
+        function getCurrentMonthSales(staffName) {
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+
+            return salesData.filter(sale => {
+                const saleDate = new Date(sale.date);
+                return sale.staffName === staffName && 
+                       saleDate.getMonth() === currentMonth && 
+                       saleDate.getFullYear() === currentYear;
+            });
+        }
+
+        function handlePaymentModeChange() {
+            const paymentMode = document.getElementById('paymentMode').value;
+            const creditCardTypeGroup = document.getElementById('creditCardTypeGroup');
+            const financingProviderGroup = document.getElementById('financingProviderGroup');
+
+            creditCardTypeGroup.classList.remove('show');
+            financingProviderGroup.classList.remove('show');
+            document.getElementById('creditCardType').value = '';
+            document.getElementById('financingProvider').value = '';
+
+            if (paymentMode === 'Credit Card') {
+                creditCardTypeGroup.classList.add('show');
+            } else if (paymentMode === 'Financing') {
+                financingProviderGroup.classList.add('show');
+            }
+        }
+
+        async function loadDataFromGoogleSheets() {
+            if (!scriptUrl) {
+                console.log('No script URL - waiting for data');
+                return;
+            }
+
+            try {
+                const response = await fetch(scriptUrl);
+                const data = await response.json();
+                // REPLACE local data completely with Google Sheets data
+                salesData = data || [];
+                updateSalesTable();
+                console.log('✓ Data loaded from Google Sheets:', salesData.length, 'records');
+            } catch (error) {
+                console.log('Could not load from Google Sheets:', error);
+            }
+        }
+
+        async function quickSyncFromSheets() {
+            const btn = document.getElementById('headerSyncBtn');
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            
+            try {
+                const response = await fetch(scriptUrl);
+                const data = await response.json();
+                salesData = data || [];
+                updateSalesTable();
+                btn.textContent = '✓ Synced!';
+                setTimeout(() => {
+                    btn.textContent = '🔄 Sync';
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                }, 2000);
+            } catch (error) {
+                btn.textContent = '✗ Failed';
+                setTimeout(() => {
+                    btn.textContent = '🔄 Sync';
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                }, 2000);
+            }
+        }
+
+        function handleLogin() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if (!username || !password) {
+                errorDiv.textContent = 'Please enter username and password';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            const user = users[username];
+            if (!user || user.password !== password) {
+                errorDiv.textContent = 'Invalid username or password';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            errorDiv.classList.remove('show');
+            currentUser = { username, ...user };
+            showDashboard();
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('dashboardScreen').style.display = 'none';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginError').classList.remove('show');
+            if (autoSyncInterval) clearInterval(autoSyncInterval);
+            // Clear all data on logout
+            salesData = [];
+        }
+
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').style.display = 'block';
+            document.getElementById('currentUser').textContent = `👤 ${currentUser.name} (${currentUser.role})`;
+
+            if (currentUser.role === 'admin') {
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+                document.getElementById('staffNameGroup').style.display = 'block';
+                document.getElementById('scriptUrl').value = scriptUrl;
+                document.getElementById('staffSalesInfo').style.display = 'none';
+            } else {
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+                document.getElementById('staffNameGroup').style.display = 'none';
+                document.getElementById('staffSalesInfo').style.display = 'block';
+                document.getElementById('staffSalesInfo').textContent = `📌 You are viewing only your sales (${currentUser.name})`;
+            }
+
+            // Load from Google Sheets immediately on login
+            loadDataFromGoogleSheets();
+        }
+
+        function switchTab(event, tabName) {
+            event.preventDefault();
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'performance') {
+                updatePerformanceTab();
+            }
+        }
+
+        async function recordSale() {
+            const date = document.getElementById('date').value;
+            let staffName = document.getElementById('staffName').value;
+            
+            if (currentUser.role === 'staff') {
+                staffName = currentUser.name;
+            }
+            
+            const brand = document.getElementById('brand').value;
+            const model = document.getElementById('model').value;
+            const variant = document.getElementById('variant').value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const unitPrice = parseFloat(document.getElementById('unitPrice').value);
+            const source = document.getElementById('source').value;
+            let paymentMode = document.getElementById('paymentMode').value;
+
+            if (paymentMode === 'Credit Card') {
+                const creditCardType = document.getElementById('creditCardType').value;
+                if (!creditCardType) {
+                    alert('Please select Credit Card payment type');
+                    return;
+                }
+                paymentMode = `Credit Card - ${creditCardType}`;
+            } else if (paymentMode === 'Financing') {
+                const financingProvider = document.getElementById('financingProvider').value;
+                if (!financingProvider) {
+                    alert('Please select Financing provider');
+                    return;
+                }
+                paymentMode = `Financing - ${financingProvider}`;
+            }
+
+            if (!date || !staffName || !brand || !model || !variant || !quantity || !unitPrice || !source || !paymentMode) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const totalAmount = quantity * unitPrice;
+            const sale = { date, staffName, brand, model, variant, quantity, unitPrice, totalAmount, source, paymentMode };
+
+            salesData.push(sale);
+            updateSalesTable();
+            clearForm();
+
+            if (scriptUrl) {
+                const syncNotice = document.getElementById('syncNotice');
+                syncNotice.classList.add('show');
+                try {
+                    await fetch(scriptUrl, {
+                        method: 'POST',
+                        body: JSON.stringify(sale)
+                    });
+                    syncNotice.classList.remove('show');
+                } catch (error) {
+                    console.log('Sync to Google Sheets:', error);
+                    syncNotice.classList.remove('show');
+                }
+            }
+
+            const successMsg = document.getElementById('successMsg');
+            successMsg.classList.add('show');
+            setTimeout(() => successMsg.classList.remove('show'), 3000);
+        }
+
+        function clearForm() {
+            document.getElementById('date').valueAsDate = new Date();
+            if (currentUser.role === 'admin') {
+                document.getElementById('staffName').value = '';
+            }
+            document.getElementById('brand').value = '';
+            document.getElementById('model').value = '';
+            document.getElementById('variant').value = '';
+            document.getElementById('quantity').value = '1';
+            document.getElementById('unitPrice').value = '';
+            document.getElementById('source').value = '';
+            document.getElementById('paymentMode').value = '';
+            document.getElementById('creditCardType').value = '';
+            document.getElementById('financingProvider').value = '';
+            document.getElementById('creditCardTypeGroup').classList.remove('show');
+            document.getElementById('financingProviderGroup').classList.remove('show');
+        }
+
+        function updateSalesTable() {
+            const tbody = document.getElementById('salesBody');
+            tbody.innerHTML = '';
+
+            let displaySales = salesData;
+            if (currentUser && currentUser.role === 'staff') {
+                displaySales = salesData.filter(sale => sale.staffName === currentUser.name);
+            }
+
+            if (displaySales.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">No sales recorded yet</td></tr>';
+                return;
+            }
+
+            displaySales.forEach((sale) => {
+                const row = `<tr>
+                    <td>${sale.date}</td>
+                    <td>${sale.staffName}</td>
+                    <td>${sale.brand}</td>
+                    <td>${sale.model}</td>
+                    <td>${sale.quantity}</td>
+                    <td>₱${sale.totalAmount.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>${sale.source}</td>
+                    <td>${sale.paymentMode}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function updatePerformanceTab() {
+            const container = document.getElementById('targetSectionContainer');
+            container.innerHTML = '';
+
+            let displayStaff = Object.keys(users).filter(u => users[u].role === 'staff').map(u => users[u].name);
+            if (currentUser && currentUser.role === 'staff') {
+                displayStaff = [currentUser.name];
+            }
+
+            displayStaff.forEach(staffName => {
+                const monthlyData = getCurrentMonthSales(staffName);
+                const totalMonthSales = monthlyData.reduce((sum, sale) => sum + sale.totalAmount, 0);
+                const daysRemaining = getDaysUntilMonthEnd();
+                const targetPercentage = (totalMonthSales / MONTHLY_TARGET) * 100;
+                const deficitSales = MONTHLY_TARGET - totalMonthSales;
+                const suggestedDailyTarget = daysRemaining > 0 ? Math.ceil(deficitSales / daysRemaining) : 0;
+
+                let statusClass = 'on-track';
+                let statusText = '✓ On Track';
+                if (targetPercentage >= 100) {
+                    statusClass = 'on-track';
+                    statusText = '✓ Target Achieved!';
+                } else if (targetPercentage >= 75) {
+                    statusClass = 'on-track';
+                    statusText = '✓ On Track';
+                } else if (targetPercentage >= 50) {
+                    statusClass = 'at-risk';
+                    statusText = '⚠ At Risk';
+                } else {
+                    statusClass = 'below-target';
+                    statusText = '✗ Below Target';
+                }
+
+                const progressClass = targetPercentage >= 75 ? '' : targetPercentage >= 50 ? 'warning' : 'danger';
+
+                const card = `
+                    <div class="target-card">
+                        <div class="target-header">
+                            <h3>📊 ${staffName} - Monthly Target</h3>
+                            <span class="target-status ${statusClass}">${statusText}</span>
+                        </div>
+                        
+                        <div class="progress-bar">
+                            <div class="progress-fill ${progressClass}" style="width: ${Math.min(targetPercentage, 100)}%">
+                                ${Math.round(targetPercentage)}%
+                            </div>
+                        </div>
+
+                        <div class="target-metrics">
+                            <div class="metric">
+                                <div class="metric-label">Monthly Target</div>
+                                <div class="metric-value">₱${MONTHLY_TARGET.toLocaleString('en-PH', {minimumFractionDigits: 0, maximumFractionDigits: 0})}</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Running Sales</div>
+                                <div class="metric-value">₱${totalMonthSales.toLocaleString('en-PH', {minimumFractionDigits: 0, maximumFractionDigits: 0})}</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Deficit Sales</div>
+                                <div class="metric-value">${deficitSales > 0 ? '₱' + deficitSales.toLocaleString('en-PH', {minimumFractionDigits: 0, maximumFractionDigits: 0}) : 'Achieved ✓'}</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Days Until Month End</div>
+                                <div class="metric-value">${daysRemaining}</div>
+                            </div>
+                            <div class="metric highlight">
+                                <div class="metric-label">Suggested Daily Target</div>
+                                <div class="metric-value">₱${suggestedDailyTarget.toLocaleString('en-PH', {minimumFractionDigits: 0, maximumFractionDigits: 0})}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+
+            const perfTbody = document.getElementById('performanceBody');
+            perfTbody.innerHTML = '';
+
+            let displaySales = salesData;
+            if (currentUser && currentUser.role === 'staff') {
+                displaySales = salesData.filter(sale => sale.staffName === currentUser.name);
+            }
+
+            const staffStats = {};
+            displaySales.forEach(sale => {
+                if (!staffStats[sale.staffName]) {
+                    staffStats[sale.staffName] = { totalSales: 0, units: 0, transactions: 0 };
+                }
+                staffStats[sale.staffName].totalSales += sale.totalAmount;
+                staffStats[sale.staffName].units += sale.quantity;
+                staffStats[sale.staffName].transactions += 1;
+            });
+
+            if (Object.keys(staffStats).length === 0) {
+                perfTbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No sales data available</td></tr>';
+                return;
+            }
+
+            Object.entries(staffStats).forEach(([staff, stats]) => {
+                const avgPerSale = stats.transactions > 0 ? stats.totalSales / stats.transactions : 0;
+                const row = `<tr>
+                    <td>${staff}</td>
+                    <td>₱${stats.totalSales.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>${stats.units}</td>
+                    <td>${stats.transactions}</td>
+                    <td>₱${avgPerSale.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                </tr>`;
+                perfTbody.innerHTML += row;
+            });
+
+            const perfStats = document.getElementById('performanceStats');
+            perfStats.innerHTML = '';
+
+            Object.entries(staffStats).forEach(([staff, stats]) => {
+                const card = `<div class="stat-card">
+                    <div class="stat-label">${staff}</div>
+                    <div class="stat-value">₱${stats.totalSales.toLocaleString('en-PH', {minimumFractionDigits: 0, maximumFractionDigits: 0})}</div>
+                    <div class="stat-label">${stats.units} units • ${stats.transactions} sales</div>
+                </div>`;
+                perfStats.innerHTML += card;
+            });
+        }
+
+        async function pullDataFromSheets() {
+            if (!scriptUrl) {
+                alert('No script URL configured');
+                return;
+            }
+
+            const msg = document.getElementById('settingsMessage');
+            msg.textContent = '🔄 Pulling latest data from Google Sheets...';
+            msg.style.background = 'rgba(33, 128, 141, 0.1)';
+            msg.style.borderColor = 'var(--color-primary)';
+            msg.style.color = 'var(--color-primary)';
+            msg.classList.add('show');
+
+            try {
+                const response = await fetch(scriptUrl);
+                const data = await response.json();
+                // REPLACE all local data with Google Sheets data
+                salesData = data || [];
+                updateSalesTable();
+                msg.textContent = `✓ Successfully pulled ${salesData.length} records from Google Sheets!`;
+                setTimeout(() => msg.classList.remove('show'), 3000);
+            } catch (error) {
+                msg.textContent = '✗ Failed to pull data from Google Sheets.';
+                msg.style.background = 'rgba(255, 84, 89, 0.1)';
+                msg.style.borderColor = '#ff5459';
+                msg.style.color = '#ff5459';
+                setTimeout(() => msg.classList.remove('show'), 3000);
+            }
+        }
+
+        async function testConnection() {
+            if (!scriptUrl) {
+                alert('No script URL configured');
+                return;
+            }
+
+            try {
+                const response = await fetch(scriptUrl);
+                const data = await response.json();
+                const msg = document.getElementById('settingsMessage');
+                msg.textContent = `✓ Connection successful! Found ${data.length} records in Google Sheet`;
+                msg.classList.add('show');
+                setTimeout(() => msg.classList.remove('show'), 3000);
+            } catch (error) {
+                const msg = document.getElementById('settingsMessage');
+                msg.textContent = '✗ Connection failed. Check your connection.';
+                msg.style.background = 'rgba(255, 84, 89, 0.1)';
+                msg.style.borderColor = '#ff5459';
+                msg.style.color = '#ff5459';
+                msg.classList.add('show');
+                setTimeout(() => msg.classList.remove('show'), 3000);
+            }
+        }
+
+        async function syncToGoogleSheets() {
+            if (!scriptUrl) {
+                alert('No script URL configured');
+                return;
+            }
+
+            const msg = document.getElementById('settingsMessage');
+            msg.textContent = '📤 Pushing to Google Sheets...';
+            msg.classList.add('show');
+
+            try {
+                for (const sale of salesData) {
+                    await fetch(scriptUrl, {
+                        method: 'POST',
+                        body: JSON.stringify(sale)
+                    });
+                }
+                msg.textContent = '✓ All sales data synced to Google Sheets!';
+                setTimeout(() => msg.classList.remove('show'), 3000);
+            } catch (error) {
+                msg.textContent = '✗ Sync failed.';
+                msg.style.background = 'rgba(255, 84, 89, 0.1)';
+                msg.style.borderColor = '#ff5459';
+                msg.style.color = '#ff5459';
+                setTimeout(() => msg.classList.remove('show'), 3000);
+            }
+        }
+
+        function toggleAutoSync() {
+            const checkbox = document.getElementById('autoSyncCheckbox');
+            const status = document.getElementById('autoSyncStatus');
+
+            if (checkbox.checked) {
+                autoSyncInterval = setInterval(() => {
+                    pullDataFromSheets();
+                }, 300000); // 5 minutes
+                status.textContent = '✓ Auto-sync enabled (pulls every 5 minutes)';
+            } else {
+                clearInterval(autoSyncInterval);
+                status.textContent = '✗ Auto-sync disabled';
+            }
+        }
+
+        function downloadAsCSV() {
+            if (salesData.length === 0) {
+                alert('No data to download');
+                return;
+            }
+
+            const headers = ['Date', 'Staff Name', 'Brand', 'Model', 'Variant', 'Quantity', 'Unit Price', 'Total Amount', 'Source', 'Payment Mode'];
+            const rows = salesData.map(sale => [
+                sale.date, sale.staffName, sale.brand, sale.model, sale.variant,
+                sale.quantity, sale.unitPrice, sale.totalAmount, sale.source, sale.paymentMode
+            ]);
+
+            let csv = headers.join(',') + '\n';
+            rows.forEach(row => {
+                csv += row.map(cell => `"${cell}"`).join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sales-data.csv';
+            a.click();
+        }
+
+        function clearAllData() {
+            if (!confirm('Are you sure? This will delete all sales data.')) return;
+            salesData = [];
+            updateSalesTable();
+            alert('All data cleared');
+        }
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') {
+                handleLogin();
+            }
+        });
+
+        window.addEventListener('load', function() {
+            console.log('Dashboard ready - waiting for login');
+        });
+    </script>
+</body>
+</html>
